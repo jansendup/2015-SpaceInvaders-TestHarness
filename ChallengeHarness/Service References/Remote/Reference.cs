@@ -16,10 +16,10 @@ namespace ChallengeHarness.Remote {
     public interface IBotRunner {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/Init", ReplyAction="http://tempuri.org/IBotRunner/InitResponse")]
-        void Init(int playerNumber, string workingPath, string executableFilename);
+        void Init(int playerNumber, string workingPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/Init", ReplyAction="http://tempuri.org/IBotRunner/InitResponse")]
-        System.Threading.Tasks.Task InitAsync(int playerNumber, string workingPath, string executableFilename);
+        System.Threading.Tasks.Task InitAsync(int playerNumber, string workingPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/GetPlayerNumber", ReplyAction="http://tempuri.org/IBotRunner/GetPlayerNumberResponse")]
         int GetPlayerNumber();
@@ -73,12 +73,12 @@ namespace ChallengeHarness.Remote {
                 base(binding, remoteAddress) {
         }
         
-        public void Init(int playerNumber, string workingPath, string executableFilename) {
-            base.Channel.Init(playerNumber, workingPath, executableFilename);
+        public void Init(int playerNumber, string workingPath) {
+            base.Channel.Init(playerNumber, workingPath);
         }
         
-        public System.Threading.Tasks.Task InitAsync(int playerNumber, string workingPath, string executableFilename) {
-            return base.Channel.InitAsync(playerNumber, workingPath, executableFilename);
+        public System.Threading.Tasks.Task InitAsync(int playerNumber, string workingPath) {
+            return base.Channel.InitAsync(playerNumber, workingPath);
         }
         
         public int GetPlayerNumber() {

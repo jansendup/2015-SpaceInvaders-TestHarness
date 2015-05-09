@@ -12,7 +12,7 @@ namespace ChallengeHarnessInterfaces
     public interface IBotRunner
     {
         [OperationContract]
-        void Init(int playerNumber, String workingPath, String executableFilename);
+        void Init(int playerNumber, String workingPath);
         [OperationContract]
         int GetPlayerNumber();
         [OperationContract]

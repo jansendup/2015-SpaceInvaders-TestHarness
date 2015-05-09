@@ -19,15 +19,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:8080/" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:7364/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="51fb068c-9e91-400b-b37d-69c9abc39f67" SourceId="1" SourceUrl="http://localhost:8080/?xsd=xsd2" />
-    <MetadataFile FileName="item.disco" MetadataType="Disco" ID="31fa2d2c-117f-42f0-bed0-8cec3fc6bdd9" SourceId="1" SourceUrl="http://localhost:8080/?disco" />
-    <MetadataFile FileName="BotRunner.wsdl" MetadataType="Wsdl" ID="3d42e6bf-b6c6-4017-9979-4fe9f29036b0" SourceId="1" SourceUrl="http://localhost:8080/?wsdl" />
-    <MetadataFile FileName="item1.xsd" MetadataType="Schema" ID="3e60f5a9-ddbb-4c2b-bb80-91c694677d66" SourceId="1" SourceUrl="http://localhost:8080/?xsd=xsd1" />
-    <MetadataFile FileName="item2.xsd" MetadataType="Schema" ID="837dc0c8-d3cf-4f3c-8f06-20a056c8ff40" SourceId="1" SourceUrl="http://localhost:8080/?xsd=xsd3" />
-    <MetadataFile FileName="item3.xsd" MetadataType="Schema" ID="ed722270-35b2-4995-8a6a-c13197aa2e2b" SourceId="1" SourceUrl="http://localhost:8080/?xsd=xsd0" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="65e45e31-a12b-40ff-9686-6904089f33e0" SourceId="1" SourceUrl="http://localhost:7364/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="d9de1edb-b725-431b-8ab0-a08ef8976a14" SourceId="1" SourceUrl="http://localhost:7364/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="308d86d8-931e-4954-9171-0863c089f012" SourceId="1" SourceUrl="http://localhost:7364/mex" />
+    <MetadataFile FileName="ChallengeHarnessInterfaces.xsd" MetadataType="Schema" ID="aa4879c8-a7aa-46c5-8502-0798b6f1bf03" SourceId="1" SourceUrl="http://localhost:7364/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="fb774b70-7bc3-4c28-9d72-a1bcd85a1b17" SourceId="1" SourceUrl="http://localhost:7364/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

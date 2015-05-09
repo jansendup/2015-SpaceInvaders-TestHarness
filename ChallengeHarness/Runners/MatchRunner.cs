@@ -22,43 +22,24 @@ namespace ChallengeHarness.Runners
             _consoleLogger = new ConsoleLogger();
             _replayLogger = new ReplayLogger();
 
-            string runFilename = Environment.OSVersion.Platform == PlatformID.Unix ? Settings.Default.BotRunFilenameLinux : Settings.Default.BotRunFilename;
             _players = new IBotRunner[2];
             if (playerOneFolder.Contains("@"))
             {
                 string[] temp = playerOneFolder.Split('@');
-                _players[0] = new RemoteBotRunner(
-                1,
-                temp[0],
-                runFilename,
-                temp[1]
-                );
+                _players[0] = new RemoteBotRunner(1, temp[0], temp[1]);
             }
             else
             {
-                _players[0] = new BotRunner(
-                    1,
-                    playerOneFolder,
-                    runFilename
-                    );
+                _players[0] = new BotRunner(1, playerOneFolder);
             }
             if (playerTwoFolder.Contains("@"))
             {
                 string[] temp = playerTwoFolder.Split('@');
-                _players[1] = new RemoteBotRunner(
-                1,
-                temp[0],
-                runFilename,
-                temp[1]
-                );
+                _players[1] = new RemoteBotRunner(2, temp[0], temp[1]);
             }
             else
             {
-                _players[1] = new BotRunner(
-                    1,
-                    playerTwoFolder,
-                    runFilename
-                    );
+                _players[1] = new BotRunner(2, playerTwoFolder);
             }
 
             match.SetPlayerName(1, _players[0].GetPlayerName());

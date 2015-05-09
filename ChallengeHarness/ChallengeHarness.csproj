@@ -72,11 +72,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Service References\Remote\BotRunner.wsdl" />
-    <None Include="Service References\Remote\item.xsd" />
-    <None Include="Service References\Remote\item1.xsd" />
-    <None Include="Service References\Remote\item2.xsd" />
-    <None Include="Service References\Remote\item3.xsd" />
+    <None Include="Service References\Remote\Arrays.xsd" />
+    <None Include="Service References\Remote\ChallengeHarnessInterfaces.xsd" />
+    <None Include="Service References\Remote\service.wsdl" />
+    <None Include="Service References\Remote\service.xsd" />
+    <None Include="Service References\Remote\service1.xsd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChallengeHarnessInterfaces\ChallengeHarnessInterfaces.csproj">
@@ -89,9 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\Remote\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\Remote\item.disco" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\Remote\configuration91.svcinfo" />

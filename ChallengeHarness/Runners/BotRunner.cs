@@ -30,13 +30,14 @@ namespace ChallengeHarness.Runners
         public BotRunner()
         {}
 
-        public BotRunner(int playerNumber, String workingPath, String executableFilename)
+        public BotRunner(int playerNumber, String workingPath)
         {
-            Init(playerNumber, workingPath, executableFilename);
+            Init(playerNumber, workingPath);
         }
 
-        public void Init(int playerNumber, String workingPath, String executableFilename)
+        public void Init(int playerNumber, String workingPath)
         {
+            string executableFilename = Environment.OSVersion.Platform == PlatformID.Unix ? Settings.Default.BotRunFilenameLinux : Settings.Default.BotRunFilename;
             _inMemoryLog = new MemoryStream();
             _inMemoryLogWriter = new StreamWriter(_inMemoryLog);
             _botTimer = new Stopwatch();

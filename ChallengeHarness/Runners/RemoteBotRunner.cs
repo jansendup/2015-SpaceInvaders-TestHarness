@@ -11,16 +11,19 @@ namespace ChallengeHarness.Runners
     public class RemoteBotRunner : IBotRunner
     {
         private Remote.BotRunnerClient _client;
-        public RemoteBotRunner(int playerNumber, string workingPath, string executableFilename, string address)
+        public RemoteBotRunner(int playerNumber, string workingPath, string address)
         {
             NetTcpBinding binding = new NetTcpBinding();
-            binding.MaxReceivedMessageSize = 512*1024;
+            binding.MaxReceivedMessageSize = 512 * 1024;
+            NetTcpSecurity security = new NetTcpSecurity();
+            security.Mode = SecurityMode.None;
+            binding.Security = security;
             _client = new Remote.BotRunnerClient(binding, new EndpointAddress("net.tcp://" + address + "/BotRunner"));
-            Init(playerNumber, workingPath, executableFilename);
+            Init(playerNumber, workingPath);
         }
-        public void Init(int playerNumber, string workingPath, string executableFilename)
+        public void Init(int playerNumber, string workingPath)
         {
-            _client.Init(playerNumber, workingPath, executableFilename);
+            _client.Init(playerNumber, workingPath);
         }
 
         public int GetPlayerNumber()
