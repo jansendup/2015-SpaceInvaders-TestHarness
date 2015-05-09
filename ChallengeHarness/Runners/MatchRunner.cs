@@ -2,6 +2,7 @@
 using ChallengeHarness.Properties;
 using ChallengeHarnessInterfaces;
 using System;
+using System.ServiceModel;
 
 namespace ChallengeHarness.Runners
 {
@@ -9,7 +10,7 @@ namespace ChallengeHarness.Runners
     {
         private readonly ConsoleLogger _consoleLogger;
         private readonly MatchLogger _logger;
-        private readonly BotRunner[] _players;
+        private readonly IBotRunner[] _players;
         private readonly ReplayLogger _replayLogger;
 
         public MatchRunner(IMatch match, string playerOneFolder, string playerTwoFolder, IRenderer renderer)
@@ -21,21 +22,47 @@ namespace ChallengeHarness.Runners
             _consoleLogger = new ConsoleLogger();
             _replayLogger = new ReplayLogger();
 
-			string runFilename = Environment.OSVersion.Platform == PlatformID.Unix ? Settings.Default.BotRunFilenameLinux : Settings.Default.BotRunFilename;
-            _players = new BotRunner[2];
-            _players[0] = new BotRunner(
+            string runFilename = Environment.OSVersion.Platform == PlatformID.Unix ? Settings.Default.BotRunFilenameLinux : Settings.Default.BotRunFilename;
+            _players = new IBotRunner[2];
+            if (playerOneFolder.Contains("@"))
+            {
+                string[] temp = playerOneFolder.Split('@');
+                _players[0] = new RemoteBotRunner(
                 1,
-                playerOneFolder,
-				runFilename
+                temp[0],
+                runFilename,
+                temp[1]
                 );
-            _players[1] = new BotRunner(
-                2,
-                playerTwoFolder,
-				runFilename
+            }
+            else
+            {
+                _players[0] = new BotRunner(
+                    1,
+                    playerOneFolder,
+                    runFilename
+                    );
+            }
+            if (playerTwoFolder.Contains("@"))
+            {
+                string[] temp = playerTwoFolder.Split('@');
+                _players[1] = new RemoteBotRunner(
+                1,
+                temp[0],
+                runFilename,
+                temp[1]
                 );
+            }
+            else
+            {
+                _players[1] = new BotRunner(
+                    1,
+                    playerTwoFolder,
+                    runFilename
+                    );
+            }
 
-            match.SetPlayerName(1, _players[0].PlayerName);
-            match.SetPlayerName(2, _players[1].PlayerName);
+            match.SetPlayerName(1, _players[0].GetPlayerName());
+            match.SetPlayerName(2, _players[1].GetPlayerName());
         }
 
         public IMatch Match { get; private set; }
@@ -62,10 +89,10 @@ namespace ChallengeHarness.Runners
             CopyLogs();
         }
 
-        private void GetMove(BotRunner player, MatchRender rendered)
+        private void GetMove(IBotRunner player, MatchRender rendered)
         {
             var move = player.GetMove(rendered);
-            Match.SetPlayerMove(player.PlayerNumber, move);
+            Match.SetPlayerMove(player.GetPlayerNumber(), move);
         }
 
         private void LogAll(MatchRender renderP1)
@@ -87,8 +114,8 @@ namespace ChallengeHarness.Runners
             _logger.Close();
 
             _replayLogger.CopyMatchLog(_logger.FileName);
-            _replayLogger.CopyBotLog(_players[0].BotLogFilename, 1);
-            _replayLogger.CopyBotLog(_players[1].BotLogFilename, 2);
+            _replayLogger.WriteBotLog(_players[0].GetLog(), 1);
+            _replayLogger.WriteBotLog(_players[1].GetLog(), 2);
         }
     }
 }

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="BotRunner" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IBotRunner_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/ChallengeHarnessInterfaces" />
+      <xsd:import schemaLocation="http://localhost:8080/?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IBotRunner_Init_InputMessage">
+    <wsdl:part name="parameters" element="tns:Init" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_Init_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InitResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetPlayerNumber_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerNumber" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetPlayerNumber_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerNumberResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetPlayerName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerName" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetPlayerName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPlayerNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetMove_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMove" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetMove_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMoveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetLog_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLog" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_GetLog_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IBotRunner">
+    <wsdl:operation name="Init">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBotRunner/Init" message="tns:IBotRunner_Init_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBotRunner/InitResponse" message="tns:IBotRunner_Init_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerNumber">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBotRunner/GetPlayerNumber" message="tns:IBotRunner_GetPlayerNumber_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBotRunner/GetPlayerNumberResponse" message="tns:IBotRunner_GetPlayerNumber_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerName">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBotRunner/GetPlayerName" message="tns:IBotRunner_GetPlayerName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBotRunner/GetPlayerNameResponse" message="tns:IBotRunner_GetPlayerName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMove">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBotRunner/GetMove" message="tns:IBotRunner_GetMove_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBotRunner/GetMoveResponse" message="tns:IBotRunner_GetMove_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLog">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBotRunner/GetLog" message="tns:IBotRunner_GetLog_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBotRunner/GetLogResponse" message="tns:IBotRunner_GetLog_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IBotRunner" type="tns:IBotRunner">
+    <wsp:PolicyReference URI="#NetTcpBinding_IBotRunner_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="Init">
+      <soap12:operation soapAction="http://tempuri.org/IBotRunner/Init" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerNumber">
+      <soap12:operation soapAction="http://tempuri.org/IBotRunner/GetPlayerNumber" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerName">
+      <soap12:operation soapAction="http://tempuri.org/IBotRunner/GetPlayerName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMove">
+      <soap12:operation soapAction="http://tempuri.org/IBotRunner/GetMove" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLog">
+      <soap12:operation soapAction="http://tempuri.org/IBotRunner/GetLog" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IBotRunner" type="tns:IBotRunner">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Init">
+      <soap:operation soapAction="http://tempuri.org/IBotRunner/Init" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerNumber">
+      <soap:operation soapAction="http://tempuri.org/IBotRunner/GetPlayerNumber" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPlayerName">
+      <soap:operation soapAction="http://tempuri.org/IBotRunner/GetPlayerName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMove">
+      <soap:operation soapAction="http://tempuri.org/IBotRunner/GetMove" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLog">
+      <soap:operation soapAction="http://tempuri.org/IBotRunner/GetLog" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BotRunner">
+    <wsdl:port name="NetTcpBinding_IBotRunner" binding="tns:NetTcpBinding_IBotRunner">
+      <soap12:address location="net.tcp://localhost:8090/BotRunner" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:8090/BotRunner</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Upn>JANSEN-PC\Jansen</Upn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IBotRunner" binding="tns:BasicHttpBinding_IBotRunner">
+      <soap:address location="http://localhost:8080/BotRunner" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

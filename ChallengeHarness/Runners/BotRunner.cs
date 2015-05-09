@@ -1,24 +1,41 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.Text;
+using System.Threading.Tasks;
 using ChallengeHarness.Properties;
 using ChallengeHarnessInterfaces;
 using Newtonsoft.Json;
 
 namespace ChallengeHarness.Runners
 {
-    public class BotRunner
+    public class BotRunner : IBotRunner
     {
-        private readonly Stopwatch _botTimer;
-        private readonly MemoryStream _inMemoryLog;
-        private readonly StreamWriter _inMemoryLogWriter;
-        private readonly string _mapFilename;
-        private readonly string _moveFilename;
-        private readonly string _stateFilename;
-        private readonly string _workingPath;
+        private Stopwatch _botTimer;
+        private MemoryStream _inMemoryLog;
+        private StreamWriter _inMemoryLogWriter;
+        private string _mapFilename;
+        private string _moveFilename;
+        private string _stateFilename;
+        private string _workingPath;
+        private string _botLogFilename;
         private string _processName;
 
+        private int _playerNumber;
+        private string _playerName;
+
+        public BotRunner()
+        {}
+
         public BotRunner(int playerNumber, String workingPath, String executableFilename)
+        {
+            Init(playerNumber, workingPath, executableFilename);
+        }
+
+        public void Init(int playerNumber, String workingPath, String executableFilename)
         {
             _inMemoryLog = new MemoryStream();
             _inMemoryLogWriter = new StreamWriter(_inMemoryLog);
@@ -30,19 +47,18 @@ namespace ChallengeHarness.Runners
             _moveFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MoveFileName);
             _processName = Path.Combine(_workingPath, executableFilename);
 
-            BotLogFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder,
+            _botLogFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder,
                 Settings.Default.BotLogFilename);
 
-            PlayerNumber = playerNumber;
-            PlayerName = LoadBotName();
+            _playerNumber = playerNumber;
+            _playerName = LoadBotName();
 
             CreateOutputDirectoryIfNotExists();
             ClearAllOutputFiles();
         }
 
-        public string BotLogFilename { get; private set; }
-        public int PlayerNumber { get; private set; }
-        public string PlayerName { get; private set; }
+        public int GetPlayerNumber() { return _playerNumber; }
+        public string GetPlayerName() { return _playerName; }
 
         private string LoadBotName()
         {
@@ -62,7 +78,7 @@ namespace ChallengeHarness.Runners
             }
             catch
             {
-                return "Player " + PlayerNumber;
+                return "Player " + _playerNumber;
             }
 
             return metaData.NickName;
@@ -104,8 +120,8 @@ namespace ChallengeHarness.Runners
         private void AppendLogs()
         {
             _inMemoryLogWriter.Flush();
-            Debug.WriteLine("Saving player " + PlayerNumber + " bot log to: " + BotLogFilename);
-            using (var file = File.Open(BotLogFilename, FileMode.Append))
+            Debug.WriteLine("Saving player " + _playerNumber + " bot log to: " + _botLogFilename);
+            using (var file = File.Open(_botLogFilename, FileMode.Append))
             {
                 _inMemoryLog.WriteTo(file);
             }
@@ -131,7 +147,7 @@ namespace ChallengeHarness.Runners
             File.Delete(_mapFilename);
             File.Delete(_stateFilename);
             File.Delete(_moveFilename);
-            File.Delete(BotLogFilename);
+            File.Delete(_botLogFilename);
         }
 
         private void ClearRoundFiles()
@@ -142,24 +158,26 @@ namespace ChallengeHarness.Runners
         }
 
         private Process CreateProcess()
-		{
-			if (!File.Exists (_processName)) {
-				throw new FileNotFoundException ("Bot process file '" + _processName + "' not found.");
-			}
+        {
+            if (!File.Exists(_processName))
+            {
+                throw new FileNotFoundException("Bot process file '" + _processName + "' not found.");
+            }
 
-			var arguments = " \"" + Settings.Default.BotOutputFolder + "\"";
-			var processName = _processName;
-			if (Environment.OSVersion.Platform == PlatformID.Unix) {
-				arguments = _processName + " " + arguments;
-				processName = "/bin/bash";
-			}
+            var arguments = " \"" + Settings.Default.BotOutputFolder + "\"";
+            var processName = _processName;
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                arguments = _processName + " " + arguments;
+                processName = "/bin/bash";
+            }
 
             return new Process
             {
                 StartInfo =
                 {
                     WorkingDirectory = _workingPath,
-					FileName = processName,
+                    FileName = processName,
                     Arguments = arguments,
                     CreateNoWindow = true,
                     WindowStyle = ProcessWindowStyle.Hidden,
@@ -189,26 +207,26 @@ namespace ChallengeHarness.Runners
             p.BeginOutputReadLine();
             p.BeginErrorReadLine();
 
-            var didExit = p.WaitForExit(Settings.Default.MoveTimeoutSeconds*1000);
+            var didExit = p.WaitForExit(Settings.Default.MoveTimeoutSeconds * 1000);
             _botTimer.Stop();
 
             if (!didExit)
             {
                 p.Kill();
-                OutputAppendLog(String.Format("[GAME]\tBot {0} timed out after {1} ms.", PlayerName,
+                OutputAppendLog(String.Format("[GAME]\tBot {0} timed out after {1} ms.", _playerName,
                     _botTimer.ElapsedMilliseconds));
                 OutputAppendLog(String.Format("[GAME]\tKilled process {0}.", _processName));
             }
             else
             {
-                OutputAppendLog(String.Format("[GAME]\tBot {0} finished in {1} ms.", PlayerName,
+                OutputAppendLog(String.Format("[GAME]\tBot {0} finished in {1} ms.", _playerName,
                     _botTimer.ElapsedMilliseconds));
             }
 
             if (p.ExitCode != 0)
             {
                 OutputAppendLog(String.Format("[GAME]\tProcess exited with non-zero code {0} from player {1}.",
-                    p.ExitCode, PlayerName));
+                    p.ExitCode, _playerName));
             }
         }
 
@@ -216,12 +234,17 @@ namespace ChallengeHarness.Runners
         {
             if (!File.Exists(_moveFilename))
             {
-                OutputAppendLog("[GAME]\tNo output file from player " + PlayerName);
+                OutputAppendLog("[GAME]\tNo output file from player " + _playerName);
                 return null;
             }
 
             var fileLines = File.ReadAllLines(_moveFilename);
             return fileLines.Length > 0 ? fileLines[0] : null;
+        }
+
+        public string GetLog()
+        {
+            return File.ReadAllText(_botLogFilename);
         }
     }
 }

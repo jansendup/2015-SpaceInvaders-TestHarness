@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -38,6 +38,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,6 +59,12 @@
     </Compile>
     <Compile Include="Runners\BotRunner.cs" />
     <Compile Include="Runners\MatchRunner.cs" />
+    <Compile Include="Runners\RemoteBotRunner.cs" />
+    <Compile Include="Service References\Remote\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -64,12 +72,38 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Service References\Remote\BotRunner.wsdl" />
+    <None Include="Service References\Remote\item.xsd" />
+    <None Include="Service References\Remote\item1.xsd" />
+    <None Include="Service References\Remote\item2.xsd" />
+    <None Include="Service References\Remote\item3.xsd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChallengeHarnessInterfaces\ChallengeHarnessInterfaces.csproj">
       <Project>{E4FE271C-4721-4181-A614-F552EA6F2F55}</Project>
       <Name>ChallengeHarnessInterfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\Remote\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\Remote\item.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\Remote\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\Remote\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\Remote\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

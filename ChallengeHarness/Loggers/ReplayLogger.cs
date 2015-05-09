@@ -68,9 +68,9 @@ namespace ChallengeHarness.Loggers
                 true);
         }
 
-        public void CopyBotLog(string fileName, int playerNumber)
+        public void WriteBotLog(string log, int playerNumber)
         {
-            File.Copy(fileName, ReplayDirectory + Path.DirectorySeparatorChar + "bot" + playerNumber + ".log", true);
+            File.WriteAllText(ReplayDirectory + Path.DirectorySeparatorChar + "bot" + playerNumber + ".log", log);
         }
 
         protected void SaveMap(MatchRender rendered)
