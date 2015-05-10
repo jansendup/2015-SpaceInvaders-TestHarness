@@ -16,6 +16,12 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
+  <wsdl:message name="IBotRunner_Destroy_InputMessage">
+    <wsdl:part name="parameters" element="tns:Destroy" />
+  </wsdl:message>
+  <wsdl:message name="IBotRunner_Destroy_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DestroyResponse" />
+  </wsdl:message>
   <wsdl:message name="IBotRunner_Init_InputMessage">
     <wsdl:part name="parameters" element="tns:Init" />
   </wsdl:message>
@@ -47,6 +53,10 @@
     <wsdl:part name="parameters" element="tns:GetLogResponse" />
   </wsdl:message>
   <wsdl:portType name="IBotRunner">
+    <wsdl:operation name="Destroy">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBotRunner/Destroy" message="tns:IBotRunner_Destroy_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBotRunner/DestroyResponse" message="tns:IBotRunner_Destroy_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="Init">
       <wsdl:input wsaw:Action="http://tempuri.org/IBotRunner/Init" message="tns:IBotRunner_Init_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IBotRunner/InitResponse" message="tns:IBotRunner_Init_OutputMessage" />
@@ -71,6 +81,15 @@
   <wsdl:binding name="NetTcpBinding_IBotRunner" type="tns:IBotRunner">
     <wsp:PolicyReference URI="#NetTcpBinding_IBotRunner_policy" />
     <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="Destroy">
+      <soap12:operation soapAction="http://tempuri.org/IBotRunner/Destroy" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="Init">
       <soap12:operation soapAction="http://tempuri.org/IBotRunner/Init" style="document" />
       <wsdl:input>

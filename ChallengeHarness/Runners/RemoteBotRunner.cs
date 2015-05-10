@@ -18,12 +18,25 @@ namespace ChallengeHarness.Runners
             NetTcpSecurity security = new NetTcpSecurity();
             security.Mode = SecurityMode.None;
             binding.Security = security;
+            _client = null;
             _client = new Remote.BotRunnerClient(binding, new EndpointAddress("net.tcp://" + address + "/BotRunner"));
-            Init(playerNumber, workingPath);
+            if (!Init(playerNumber, workingPath))
+            {
+                throw new ApplicationException("Failed to initialize BotRunner");
+            }
         }
-        public void Init(int playerNumber, string workingPath)
+        ~RemoteBotRunner()
         {
-            _client.Init(playerNumber, workingPath);
+            Destroy();
+        }
+        public void Destroy()
+        {
+            if (_client != null)
+                _client.Destroy();
+        }
+        public bool Init(int playerNumber, string workingPath)
+        {
+            return _client.Init(playerNumber, workingPath);
         }
 
         public int GetPlayerNumber()

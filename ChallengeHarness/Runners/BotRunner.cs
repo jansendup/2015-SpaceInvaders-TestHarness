@@ -22,40 +22,75 @@ namespace ChallengeHarness.Runners
         private string _stateFilename;
         private string _workingPath;
         private string _botLogFilename;
+        private string _lockFilename;
         private string _processName;
 
         private int _playerNumber;
         private string _playerName;
 
+        private bool _have_lock;
+
         public BotRunner()
-        {}
+        {
+            _have_lock = false;
+        }
 
         public BotRunner(int playerNumber, String workingPath)
         {
-            Init(playerNumber, workingPath);
+            if (!Init(playerNumber, workingPath))
+            {
+                throw new ApplicationException("Failed to initialize BotRunner");
+            }
         }
 
-        public void Init(int playerNumber, String workingPath)
+        ~BotRunner()
         {
-            string executableFilename = Environment.OSVersion.Platform == PlatformID.Unix ? Settings.Default.BotRunFilenameLinux : Settings.Default.BotRunFilename;
-            _inMemoryLog = new MemoryStream();
-            _inMemoryLogWriter = new StreamWriter(_inMemoryLog);
-            _botTimer = new Stopwatch();
+            Destroy();
+        }
 
-            _workingPath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + workingPath;
-            _mapFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MapFilename);
-            _stateFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.StateFilename);
-            _moveFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MoveFileName);
-            _processName = Path.Combine(_workingPath, executableFilename);
+        public void Destroy()
+        {
+            if (_have_lock && File.Exists(_lockFilename))
+            {
+                File.Delete(_lockFilename);
+                _have_lock = false;
+            }
+        }
 
-            _botLogFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder,
-                Settings.Default.BotLogFilename);
+        public bool Init(int playerNumber, String workingPath)
+        {
+            try {
+                string executableFilename = Environment.OSVersion.Platform == PlatformID.Unix ? Settings.Default.BotRunFilenameLinux : Settings.Default.BotRunFilename;
+                _inMemoryLog = new MemoryStream();
+                _inMemoryLogWriter = new StreamWriter(_inMemoryLog);
+                _botTimer = new Stopwatch();
 
-            _playerNumber = playerNumber;
-            _playerName = LoadBotName();
+                _workingPath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + workingPath;
+                _mapFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MapFilename);
+                _stateFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.StateFilename);
+                _moveFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MoveFileName);
+                _processName = Path.Combine(_workingPath, executableFilename);
+                _lockFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.BotRunLockFilename);
+                _botLogFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder,
+                    Settings.Default.BotLogFilename);
 
-            CreateOutputDirectoryIfNotExists();
-            ClearAllOutputFiles();
+                if (File.Exists(_lockFilename))
+                {
+                    _have_lock = false;
+                    return false;
+                }
+
+                _playerNumber = playerNumber;
+                _playerName = LoadBotName();
+
+                CreateOutputDirectoryIfNotExists();
+                ClearAllOutputFiles();
+                File.Create(_lockFilename).Close();
+                _have_lock = true;
+                return true;
+            }
+            catch (Exception) { return false; }
+            
         }
 
         public int GetPlayerNumber() { return _playerNumber; }

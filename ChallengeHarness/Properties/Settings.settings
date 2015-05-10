@@ -41,5 +41,11 @@
     <Setting Name="BotRunFilename" Type="System.String" Scope="Application">
       <Value Profile="(Default)">run.bat</Value>
     </Setting>
+    <Setting Name="BotRunFilenameLinux" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">run.sh</Value>
+    </Setting>
+    <Setting Name="BotRunLockFilename" Type="System.String" Scope="User">
+      <Value Profile="(Default)">lock</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

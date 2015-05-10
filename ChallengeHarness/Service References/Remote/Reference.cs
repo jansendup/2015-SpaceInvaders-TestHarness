@@ -15,11 +15,17 @@ namespace ChallengeHarness.Remote {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="Remote.IBotRunner")]
     public interface IBotRunner {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/Init", ReplyAction="http://tempuri.org/IBotRunner/InitResponse")]
-        void Init(int playerNumber, string workingPath);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/Destroy", ReplyAction="http://tempuri.org/IBotRunner/DestroyResponse")]
+        void Destroy();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/Destroy", ReplyAction="http://tempuri.org/IBotRunner/DestroyResponse")]
+        System.Threading.Tasks.Task DestroyAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/Init", ReplyAction="http://tempuri.org/IBotRunner/InitResponse")]
-        System.Threading.Tasks.Task InitAsync(int playerNumber, string workingPath);
+        bool Init(int playerNumber, string workingPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/Init", ReplyAction="http://tempuri.org/IBotRunner/InitResponse")]
+        System.Threading.Tasks.Task<bool> InitAsync(int playerNumber, string workingPath);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBotRunner/GetPlayerNumber", ReplyAction="http://tempuri.org/IBotRunner/GetPlayerNumberResponse")]
         int GetPlayerNumber();
@@ -73,11 +79,19 @@ namespace ChallengeHarness.Remote {
                 base(binding, remoteAddress) {
         }
         
-        public void Init(int playerNumber, string workingPath) {
-            base.Channel.Init(playerNumber, workingPath);
+        public void Destroy() {
+            base.Channel.Destroy();
         }
         
-        public System.Threading.Tasks.Task InitAsync(int playerNumber, string workingPath) {
+        public System.Threading.Tasks.Task DestroyAsync() {
+            return base.Channel.DestroyAsync();
+        }
+        
+        public bool Init(int playerNumber, string workingPath) {
+            return base.Channel.Init(playerNumber, workingPath);
+        }
+        
+        public System.Threading.Tasks.Task<bool> InitAsync(int playerNumber, string workingPath) {
             return base.Channel.InitAsync(playerNumber, workingPath);
         }
         
