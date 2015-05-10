@@ -7,6 +7,7 @@ using System.ServiceModel;
 
 using CommandLine;
 using System.ServiceModel.Description;
+using System.Net;
 
 namespace BotRunnerHost
 {
@@ -19,7 +20,8 @@ namespace BotRunnerHost
             {
                 return;
             }
-            using (ServiceHost host = new ServiceHost(typeof(ChallengeHarness.Runners.BotRunner)))
+            
+            using (ServiceHost host = new ServiceHost(typeof(ChallengeHarness.Runners.BotRunner), new Uri("net.tcp://localhost:"+ options.Port +"/")))
             {
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.MaxReceivedMessageSize = 512 * 1024;
@@ -28,8 +30,7 @@ namespace BotRunnerHost
                 binding.Security = security;
                 host.AddServiceEndpoint(
                     typeof(ChallengeHarnessInterfaces.IBotRunner),
-                    binding,
-                    "net.tcp://0.0.0.0:" + options.Port + "/BotRunner");
+                    binding, "BotRunner");
                 host.Open();
                 Console.WriteLine("Host started @ " + DateTime.Now.ToString());
                 Console.ReadLine();
