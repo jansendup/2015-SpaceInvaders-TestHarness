@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="BotMeta.cs" />
     <Compile Include="Loggers\ConsoleLogger.cs" />
+    <Compile Include="Loggers\ConsoleScrollingLogger.cs" />
+    <Compile Include="Loggers\ILogger.cs" />
     <Compile Include="Loggers\MatchLogger.cs" />
     <Compile Include="Loggers\ReplayLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

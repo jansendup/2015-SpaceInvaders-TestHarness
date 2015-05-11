@@ -248,7 +248,8 @@ namespace ChallengeHarness.Runners
 
             if (!didExit)
             {
-                p.Kill();
+                if (!p.HasExited)
+                    p.Kill();
                 OutputAppendLog(String.Format("[GAME]\tBot {0} timed out after {1} ms.", _playerName,
                     _botTimer.ElapsedMilliseconds));
                 OutputAppendLog(String.Format("[GAME]\tKilled process {0}.", _processName));
@@ -259,7 +260,7 @@ namespace ChallengeHarness.Runners
                     _botTimer.ElapsedMilliseconds));
             }
 
-            if (p.ExitCode != 0)
+            if ((didExit) && (p.ExitCode != 0))
             {
                 OutputAppendLog(String.Format("[GAME]\tProcess exited with non-zero code {0} from player {1}.",
                     p.ExitCode, _playerName));
