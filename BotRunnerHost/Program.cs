@@ -282,6 +282,7 @@ namespace BotRunnerHost
                 else if (File.Exists("token.txt"))
                 {
                     string token = File.ReadAllText("token.txt");
+                    token = token.Trim('\r', '\n', ' ');
                     api = new API(options.Server, options.Port, token);
                     t = new Thread(new ThreadStart(api.Run));
                     t.Start();
