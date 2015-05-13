@@ -11,9 +11,21 @@ namespace BotRunnerHost
 {
     class Options
     {
-        [Option('p', "port", DefaultValue = "8081",
+        [Option('x', "port", DefaultValue = 8081,
             HelpText = "Port to listen on")]
-        public string Port { get; set; }
+        public int Port { get; set; }
+
+        [Option('s', "server", DefaultValue = null,
+            HelpText = "Server where to publish bots")]
+        public string Server { get; set; }
+
+        [Option('u', "username", DefaultValue = "",
+            HelpText = "Your username (email)")]
+        public string Username { get; set; }
+
+        [Option('p', "password", DefaultValue = "",
+            HelpText = "Your password")]
+        public string Password { get; set; }
 
         [HelpOption]
         public string GetUsage()

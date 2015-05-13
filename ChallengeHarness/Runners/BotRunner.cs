@@ -76,8 +76,15 @@ namespace ChallengeHarness.Runners
 
                 if (File.Exists(_lockFilename))
                 {
-                    _have_lock = false;
-                    return false;
+                    if ( DateTime.Now.Subtract(File.GetCreationTime(_lockFilename)).Minutes >= 20 )
+                    {
+                        File.Delete(_lockFilename);
+                    }
+                    else
+                    {
+                        _have_lock = false;
+                        return false;
+                    }
                 }
 
                 _playerNumber = playerNumber;
