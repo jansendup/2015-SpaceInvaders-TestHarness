@@ -88,6 +88,8 @@ namespace ChallengeHarness.Runners
             LogAll(Renderer.RenderSummary(Match));
 
             CopyLogs();
+            _players[0].Destroy();
+            _players[1].Destroy();
         }
 
         private void GetMove(IBotRunner player, MatchRender rendered)

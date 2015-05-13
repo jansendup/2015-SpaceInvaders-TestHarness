@@ -292,6 +292,14 @@ namespace BotRunnerHost
             {
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.MaxReceivedMessageSize = 512 * 1024;
+                binding.MaxBufferSize = 512 * 1024;
+                binding.MaxBufferPoolSize = 512 * 1024;
+                binding.ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas();
+                binding.ReaderQuotas.MaxArrayLength = 512 * 1024;
+                binding.ReaderQuotas.MaxBytesPerRead = 512 * 1024;
+                binding.ReaderQuotas.MaxDepth = 512 * 1024;
+                binding.ReaderQuotas.MaxNameTableCharCount = 512 * 1024;
+                binding.ReaderQuotas.MaxStringContentLength = 512 * 1024;
                 NetTcpSecurity security = new NetTcpSecurity();
                 security.Mode = SecurityMode.None;
                 binding.Security = security;

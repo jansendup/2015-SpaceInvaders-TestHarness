@@ -43,11 +43,6 @@ namespace ChallengeHarness.Runners
             }
         }
 
-        ~BotRunner()
-        {
-            Destroy();
-        }
-
         public void Destroy()
         {
             if (_have_lock && File.Exists(_lockFilename))
@@ -59,7 +54,8 @@ namespace ChallengeHarness.Runners
 
         public bool Init(int playerNumber, String workingPath)
         {
-            try {
+            try
+            {
                 string executableFilename = Environment.OSVersion.Platform == PlatformID.Unix ? Settings.Default.BotRunFilenameLinux : Settings.Default.BotRunFilename;
                 _inMemoryLog = new MemoryStream();
                 _inMemoryLogWriter = new StreamWriter(_inMemoryLog);
@@ -76,7 +72,7 @@ namespace ChallengeHarness.Runners
 
                 if (File.Exists(_lockFilename))
                 {
-                    if ( DateTime.Now.Subtract(File.GetCreationTime(_lockFilename)).Minutes >= 20 )
+                    if (DateTime.Now.Subtract(File.GetCreationTime(_lockFilename)).Minutes >= 20)
                     {
                         File.Delete(_lockFilename);
                     }
@@ -96,8 +92,8 @@ namespace ChallengeHarness.Runners
                 _have_lock = true;
                 return true;
             }
-            catch (Exception) { return false; }
-            
+            catch (Exception) { Destroy(); return false; }
+
         }
 
         public int GetPlayerNumber() { return _playerNumber; }
