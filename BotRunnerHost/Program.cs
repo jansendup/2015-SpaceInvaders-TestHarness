@@ -75,12 +75,23 @@ namespace BotRunnerHost
 
         private List<BotUpdate> _preUpdate;
 
-        public API(string url, string username, string password, int port)
+        public API(string url, int port, string username, string password)
         {
             _url = url;
             _username = username;
             _password = password;
-            _token = "";
+            _token = null;
+            _port = port;
+            _shouldStop = false;
+            _preUpdate = null;
+        }
+
+        public API(string url, int port, string token)
+        {
+            _url = url;
+            _username = null;
+            _password = null;
+            _token = token;
             _port = port;
             _shouldStop = false;
             _preUpdate = null;
@@ -88,10 +99,12 @@ namespace BotRunnerHost
 
         public void Run()
         {
-            if (!Authenticate())
+            if (_token == null)
             {
-                Console.WriteLine("Failed to authenticate");
-                return;
+                if (!Authenticate()) {
+                    Console.WriteLine("Failed to authenticate");
+                    return;
+                }
             }
             int counter = 0;
             while (!_shouldStop)
@@ -261,9 +274,18 @@ namespace BotRunnerHost
             Thread t = null;
             if (options.Server != null)
             {
-                api = new API(options.Server, options.Username, options.Password, options.Port);
-                t = new Thread(new ThreadStart(api.Run));
-                t.Start();
+                if (!options.Username.Equals("")) {
+                    api = new API(options.Server, options.Port, options.Username, options.Password);
+                    t = new Thread(new ThreadStart(api.Run));
+                    t.Start();
+                }
+                else if (File.Exists("token.txt"))
+                {
+                    string token = File.ReadAllText("token.txt");
+                    api = new API(options.Server, options.Port, token);
+                    t = new Thread(new ThreadStart(api.Run));
+                    t.Start();
+                }
             }
 
             using (ServiceHost host = new ServiceHost(typeof(ChallengeHarness.Runners.BotRunner), new Uri("net.tcp://localhost:" + options.Port + "/")))
