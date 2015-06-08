@@ -18,6 +18,7 @@ namespace ChallengeHarness.Runners
         private MemoryStream _inMemoryLog;
         private StreamWriter _inMemoryLogWriter;
         private string _mapFilename;
+        private string _mapAdvancedFilename;
         private string _moveFilename;
         private string _stateFilename;
         private string _workingPath;
@@ -63,6 +64,7 @@ namespace ChallengeHarness.Runners
 
                 _workingPath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + workingPath;
                 _mapFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MapFilename);
+                _mapAdvancedFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MapAdvancedFilename);
                 _stateFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.StateFilename);
                 _moveFilename = Path.Combine(_workingPath, Settings.Default.BotOutputFolder, Settings.Default.MoveFileName);
                 _processName = Path.Combine(_workingPath, executableFilename);
@@ -126,6 +128,7 @@ namespace ChallengeHarness.Runners
         public string GetMove(MatchRender rendered)
         {
             OutputFile(_mapFilename, rendered.Map);
+            OutputFile(_mapAdvancedFilename, rendered.MapAdvanced);
             OutputFile(_stateFilename, rendered.State);
 
             _botTimer.Reset();
@@ -134,7 +137,7 @@ namespace ChallengeHarness.Runners
             var process = CreateProcess();
             AddEventHandlersToProcess(process);
             StartProcess(process);
-            var result = HandleProcessResponse(process);
+            string result = HandleProcessResponse(process);
 
             AppendLogs();
             ClearRoundFiles();
@@ -184,6 +187,7 @@ namespace ChallengeHarness.Runners
         private void ClearAllOutputFiles()
         {
             File.Delete(_mapFilename);
+            File.Delete(_mapAdvancedFilename);
             File.Delete(_stateFilename);
             File.Delete(_moveFilename);
             File.Delete(_botLogFilename);
@@ -192,6 +196,7 @@ namespace ChallengeHarness.Runners
         private void ClearRoundFiles()
         {
             File.Delete(_mapFilename);
+            File.Delete(_mapAdvancedFilename);
             File.Delete(_stateFilename);
             File.Delete(_moveFilename);
         }
@@ -242,31 +247,33 @@ namespace ChallengeHarness.Runners
 
         private void StartProcess(Process p)
         {
-            p.Start();
-            p.BeginOutputReadLine();
-            p.BeginErrorReadLine();
-
-            var didExit = p.WaitForExit(Settings.Default.MoveTimeoutSeconds * 1000);
-            _botTimer.Stop();
-
-            if (!didExit)
+            using (ChangeErrorMode newErrorMode = new ChangeErrorMode(ChangeErrorMode.ErrorModes.FailCriticalErrors | ChangeErrorMode.ErrorModes.NoGpFaultErrorBox))
             {
-                if (!p.HasExited)
-                    p.Kill();
-                OutputAppendLog(String.Format("[GAME]\tBot {0} timed out after {1} ms.", _playerName,
-                    _botTimer.ElapsedMilliseconds));
-                OutputAppendLog(String.Format("[GAME]\tKilled process {0}.", _processName));
-            }
-            else
-            {
-                OutputAppendLog(String.Format("[GAME]\tBot {0} finished in {1} ms.", _playerName,
-                    _botTimer.ElapsedMilliseconds));
-            }
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+                var didExit = p.WaitForExit(Settings.Default.MoveTimeoutSeconds * 1000);
+                _botTimer.Stop();
 
-            if ((didExit) && (p.ExitCode != 0))
-            {
-                OutputAppendLog(String.Format("[GAME]\tProcess exited with non-zero code {0} from player {1}.",
-                    p.ExitCode, _playerName));
+                if (!didExit)
+                {
+                    if (!p.HasExited)
+                        p.Kill();
+                    OutputAppendLog(String.Format("[GAME]\tBot {0} timed out after {1} ms.", _playerName,
+                        _botTimer.ElapsedMilliseconds));
+                    OutputAppendLog(String.Format("[GAME]\tKilled process {0}.", _processName));
+                }
+                else
+                {
+                    OutputAppendLog(String.Format("[GAME]\tBot {0} finished in {1} ms.", _playerName,
+                        _botTimer.ElapsedMilliseconds));
+                }
+
+                if ((didExit) && (p.ExitCode != 0))
+                {
+                    OutputAppendLog(String.Format("[GAME]\tProcess exited with non-zero code {0} from player {1}.",
+                        p.ExitCode, _playerName));
+                }
             }
         }
 

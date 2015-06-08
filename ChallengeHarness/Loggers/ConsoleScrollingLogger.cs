@@ -10,13 +10,12 @@ namespace ChallengeHarness.Loggers
 
         public ConsoleScrollingLogger()
         {
-            Console.Clear();
         }
 
         public void Log(MatchRender rendered)
         {
             WriteToConsoleAndDebug(title);
-            WriteToConsoleAndDebug(rendered.Map);
+            WriteToConsoleAndDebug(rendered.MapAdvanced);
 
             Console.WriteLine();
             Console.WriteLine();

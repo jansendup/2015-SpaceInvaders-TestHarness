@@ -11,10 +11,10 @@ namespace ChallengeHarness.Runners
     {
         private readonly List<ILogger> _loggers = new List<ILogger>(3);
         private readonly MatchLogger _matchLogger = new MatchLogger();
-        private readonly ReplayLogger _replayLogger = new ReplayLogger();
+        private readonly ReplayLogger _replayLogger;
         private readonly IBotRunner[] _players;
 
-        public MatchRunner(IMatch match, string playerOneFolder, string playerTwoFolder, IRenderer renderer, bool consoleLoggingDisabled, bool consoleLoggingMustScroll)
+        public MatchRunner(IMatch match, string playerOneFolder, string playerTwoFolder, IRenderer renderer, bool consoleLoggingDisabled, bool consoleLoggingMustScroll, string replayFolder)
         {
             Match = match;
             Renderer = renderer;
@@ -42,6 +42,8 @@ namespace ChallengeHarness.Runners
             match.SetPlayerName(1, _players[0].GetPlayerName());
             match.SetPlayerName(2, _players[1].GetPlayerName());
 
+            _replayLogger = new ReplayLogger(replayFolder);
+
             SetupLogging(consoleLoggingDisabled, consoleLoggingMustScroll);
         }
 
@@ -56,7 +58,7 @@ namespace ChallengeHarness.Runners
             }
 
             var mapHeight = Renderer.Render(Match).Map.Split('\n').Length + 1 + 2 + 2; // +1 title line, +2 spacing lines and +2 move lines
-            if ((IsConsoleTooSmallForNormalLogging(mapHeight)) || (consoleLoggingMustScroll))
+            if ((consoleLoggingMustScroll) || (IsConsoleTooSmallForNormalLogging(mapHeight)))
             {
                 _loggers.Add(new ConsoleScrollingLogger());
             }
